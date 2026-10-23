@@ -50,7 +50,7 @@ function get_job(body) {
 
         const rt = runtime.get_latest_runtime_matching_language_version(
             language,
-            version
+            version,
         );
         if (rt === undefined) {
             return reject({
@@ -114,7 +114,7 @@ function get_job(body) {
                     run: run_memory_limit ?? rt.memory_limits.run,
                     compile: compile_memory_limit ?? rt.memory_limits.compile,
                 },
-            })
+            }),
         );
     });
 }
@@ -143,8 +143,8 @@ router.ws('/connect', async (ws, req) => {
                 type: 'data',
                 stream: 'stdout',
                 data: data.toString(),
-            })
-        )
+            }),
+        ),
     );
     event_bus.on('stderr', data =>
         ws.send(
@@ -152,14 +152,14 @@ router.ws('/connect', async (ws, req) => {
                 type: 'data',
                 stream: 'stderr',
                 data: data.toString(),
-            })
-        )
+            }),
+        ),
     );
     event_bus.on('stage', stage =>
-        ws.send(JSON.stringify({ type: 'stage', stage }))
+        ws.send(JSON.stringify({ type: 'stage', stage })),
     );
     event_bus.on('exit', (stage, status) =>
-        ws.send(JSON.stringify({ type: 'exit', stage, ...status }))
+        ws.send(JSON.stringify({ type: 'exit', stage, ...status })),
     );
 
     ws.on('message', async data => {
@@ -179,13 +179,13 @@ router.ws('/connect', async (ws, req) => {
                                     type: 'runtime',
                                     language: job.runtime.language,
                                     version: job.runtime.version.raw,
-                                })
+                                }),
                             );
 
                             await job.execute(box, event_bus);
                         } catch (error) {
                             logger.error(
-                                `Error cleaning up job: ${job.uuid}:\n${error}`
+                                `Error cleaning up job: ${job.uuid}:\n${error}`,
                             );
                             throw error;
                         } finally {
@@ -312,7 +312,7 @@ router.post('/packages', async (req, res) => {
     } catch (e) {
         logger.error(
             `Error while installing package ${pkg.language}-${pkg.version}:`,
-            e.message
+            e.message,
         );
 
         return res.status(500).send({
@@ -321,6 +321,7 @@ router.post('/packages', async (req, res) => {
     }
 });
 
+//TODO no need for this endpoint
 router.delete('/packages', async (req, res) => {
     logger.debug('Request to uninstall package');
 
@@ -341,7 +342,7 @@ router.delete('/packages', async (req, res) => {
     } catch (e) {
         logger.error(
             `Error while uninstalling package ${pkg.language}-${pkg.version}:`,
-            e.message
+            e.message,
         );
 
         return res.status(500).send({
