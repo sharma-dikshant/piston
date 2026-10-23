@@ -86,7 +86,7 @@ const options = {
     },
     run_timeout: {
         desc: 'Max time allowed for run stage in milliseconds',
-        default: 3000, // 3 seconds
+        default: 2000, // 2 seconds
         parser: parse_int,
         validators: [(x, raw) => !is_nan(x) || `${raw} is not a number`],
     },
@@ -98,26 +98,26 @@ const options = {
     },
     run_cpu_time: {
         desc: 'Max CPU time allowed for run stage in milliseconds',
-        default: 3000, // 3 seconds
+        default: 2000, // 2 seconds
         parser: parse_int,
         validators: [(x, raw) => !is_nan(x) || `${raw} is not a number`],
     },
     compile_memory_limit: {
         desc: 'Max memory usage for compile stage in bytes (set to -1 for no limit)',
-        default: -1, // no limit
+        default: 268435456, // 256MB
         parser: parse_int,
         validators: [(x, raw) => !is_nan(x) || `${raw} is not a number`],
     },
     run_memory_limit: {
         desc: 'Max memory usage for run stage in bytes (set to -1 for no limit)',
-        default: -1, // no limit
+        default: 268435456, // 256MB
         parser: parse_int,
         validators: [(x, raw) => !is_nan(x) || `${raw} is not a number`],
     },
     repo_url: {
         desc: 'URL of repo index',
         default:
-            'https://github.com/engineer-man/piston/releases/download/pkgs/index',
+            'https://github.com/sharma-dikshant/piston/releases/download/pkgs/index',
         validators: [],
     },
     max_concurrent_jobs: {
@@ -228,12 +228,12 @@ for (const option_name in options) {
         env_val === undefined ? [value, value] : [parsed_val, env_val];
     const validation_response = apply_validators(
         option.validators,
-        validator_parameters
+        validator_parameters,
     );
     if (validation_response !== true) {
         logger.error(
             `Config option ${option_name} failed validation:`,
-            validation_response
+            validation_response,
         );
         process.exit(1);
     }
