@@ -6,6 +6,10 @@ The API is broken in to 2 main sections - packages and jobs.
 
 The API is exposed from the container, by default on port 2000, at `/api/v2/`.
 
+Every request under `/api/v2/` (including the `/connect` WebSocket) must carry an `x-api-key` header
+containing the SHA-256 hex digest of `PISTON_API_KEY`, otherwise a `401` is returned.
+See [Configuration](configuration.md#api-key).
+
 All inputs are validated, and if an error occurs, a 4xx or 5xx status code is returned.
 In this case, a JSON payload is sent back containing the error message as `message`
 

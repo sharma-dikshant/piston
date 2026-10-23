@@ -2,7 +2,7 @@ version: '3.2'
 
 services:
     api:
-        image: ghcr.io/engineer-man/piston
+        image: .
         container_name: piston_api
         restart: always
         privileged: true
@@ -10,5 +10,7 @@ services:
             - 2000:2000
         volumes:
             - ./data/piston/packages:/piston/packages
+        environment:
+            - PISTON_API_KEY=${PISTON_API_KEY:?PISTON_API_KEY must be set}
         tmpfs:
             - /tmp:exec

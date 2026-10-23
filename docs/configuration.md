@@ -183,6 +183,20 @@ default: 64
 
 Maximum number of jobs to run concurrently.
 
+## API Key
+
+```yaml
+key: PISTON_API_KEY
+default: none (required)
+```
+
+Shared secret used to authenticate every request under `/api/v2`. The API refuses to start without it.
+Clients must send the lowercase or uppercase SHA-256 hex digest of this value in the `x-api-key` header:
+
+```sh
+curl -H "x-api-key: $(printf %s "$PISTON_API_KEY" | sha256sum | cut -d' ' -f1)" http://localhost:2000/api/v2/runtimes
+```
+
 ## Limit overrides
 
 ```yaml

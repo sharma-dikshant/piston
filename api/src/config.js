@@ -126,6 +126,15 @@ const options = {
         parser: parse_int,
         validators: [x => x > 0 || `${x} cannot be negative`],
     },
+    api_key: {
+        desc: 'Shared secret; clients send its SHA-256 hex digest in the x-api-key header',
+        default: undefined,
+        validators: [
+            x =>
+                (typeof x === 'string' && x.length > 0) ||
+                'PISTON_API_KEY must be set',
+        ],
+    },
     limit_overrides: {
         desc: 'Per-language exceptions in JSON format for each of:\
         max_process_count, max_open_files, max_file_size, compile_memory_limit,\

@@ -75,8 +75,9 @@ expressWs(app);
 
     logger.debug('Registering Routes');
 
+    const auth = require('./auth');
     const api_v2 = require('./api/v2');
-    app.use('/api/v2', api_v2);
+    app.use('/api/v2', auth, api_v2);
 
     const { version } = require('../package.json');
 
