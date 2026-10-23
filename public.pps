@@ -1,14 +1,9 @@
 #!/usr/bin/env -S piston ppman spec
 
-# Public Piston Packages
-# Defines packages to be installed on the public piston installation
+# Public Piston Packages (RealPrep)
+# Only the languages RealPrep uses, latest version
 
-# All packages, latest version
-* *
-
-# Except python
-!python *
-
-# Install python 3.* and 2.*
-python 3.*
-python 2.*
+gcc *
+java *
+python 3.12.0
+go *

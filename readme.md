@@ -191,7 +191,7 @@ cli/index.js ppman list
 cli/index.js ppman install python
 
 # Install specific version of python
-cli/index.js ppman install python=3.9.4
+cli/index.js ppman install python=3.12.0
 
 # Run a python script using the latest version
 echo 'print("Hello world!")' > test.py
@@ -199,7 +199,7 @@ cli/index.js run python test.py
 
 # Run a python script using a specific version
 echo 'print("Hello world!")' > test.py
-cli/index.js run python test.py -l 3.9.4
+cli/index.js run python test.py -l 3.12.0
 cli/index.js run python test.py -l 3.x
 cli/index.js run python test.py -l 3
 ```
@@ -371,90 +371,13 @@ Errors may return status codes as follows:
 
 # Supported Languages
 
-`awk`,
-`bash`,
-`befunge93`,
-`brachylog`,
-`brainfuck`,
-`bqn`,
 `c`,
 `c++`,
-`cjam`,
-`clojure`,
-`cobol`,
-`coffeescript`,
-`cow`,
-`crystal`,
-`csharp`,
-`csharp.net`,
 `d`,
-`dart`,
-`dash`,
-`dragon`,
-`elixir`,
-`emacs`,
-`emojicode`,
-`erlang`,
-`file`,
-`forte`,
-`forth`,
 `fortran`,
-`freebasic`,
-`fsharp.net`,
-`fsi`,
 `go`,
-`golfscript`,
-`groovy`,
-`haskell`,
-`husk`,
-`iverilog`,
-`japt`,
 `java`,
-`javascript`,
-`jelly`,
-`julia`,
-`kotlin`,
-`lisp`,
-`llvm_ir`,
-`lolcode`,
-`lua`,
-`matl`,
-`nasm`,
-`nasm64`,
-`nim`,
-`ocaml`,
-`octave`,
-`osabie`,
-`paradoc`,
-`pascal`,
-`perl`,
-`php`,
-`ponylang`,
-`powershell`,
-`prolog`,
-`pure`,
-`pyth`,
 `python`,
-`python2`,
-`racket`,
-`raku`,
-`retina`,
-`rockstar`,
-`rscript`,
-`ruby`,
-`rust`,
-`samarium`,
-`scala`,
-`smalltalk`,
-`sqlite3`,
-`swift`,
-`typescript`,
-`basic`,
-`basic.net`,
-`vlang`,
-`vyxal`,
-`yeethon`,
-`zig`,
 
 <br>
 
