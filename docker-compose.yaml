@@ -15,5 +15,6 @@ services:
             - PISTON_API_KEY=${PISTON_API_KEY:?PISTON_API_KEY must be set}
             - PISTON_MAX_CONCURRENT_JOBS=${PISTON_MAX_CONCURRENT_JOBS:-4}
             - PISTON_LOG_LEVEL=${PISTON_LOG_LEVEL:-INFO}
+            - PISTON_REPO_URL=${PISTON_REPO_URL:-https://github.com/sharma-dikshant/piston/releases/download/pkgs/index}
         mem_limit: ${PISTON_MEM_LIMIT:-3g}
         cpus: ${PISTON_CPUS:-2}
