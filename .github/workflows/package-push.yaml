@@ -7,37 +7,48 @@ on:
             - v3
         paths:
             - packages/**
+    workflow_dispatch:
+        inputs:
+            packages:
+                description: 'Space separated <language>-<version> list to build'
+                required: true
+                default: 'gcc-10.2.0 go-1.16.2 java-15.0.2 python-3.12.0'
+
+permissions:
+    contents: write
 
 jobs:
     build-pkg:
         name: Build package
         runs-on: ubuntu-latest
+        outputs:
+            built: ${{ steps.build.outputs.built }}
         steps:
             - name: Checkout
-              uses: actions/checkout@v3
-
-            - name: Login to GitHub registry
-              uses: docker/login-action@v2
+              uses: actions/checkout@v4
               with:
-                  username: ${{ github.actor }}
-                  password: ${{ secrets.GITHUB_TOKEN }}
-                  registry: docker.pkg.github.com
-
-            - name: Get list of changed files
-              uses: lots0logs/gh-action-get-changed-files@2.1.4
-              with:
-                  token: ${{ secrets.GITHUB_TOKEN }}
+                  fetch-depth: 0
 
             - name: Build Packages
+              id: build
+              env:
+                  INPUT_PACKAGES: ${{ github.event.inputs.packages }}
+                  BEFORE_SHA: ${{ github.event.before }}
               run: |
-                  PACKAGES=$(jq '.[]' -r ${HOME}/files*.json | awk -F/ '$1~/packages/ && $2 && $3{ print $2 "-" $3 }' | sort -u)
+                  if [ -n "$INPUT_PACKAGES" ]; then
+                    PACKAGES="$INPUT_PACKAGES"
+                  else
+                    PACKAGES=$(git diff --name-only "$BEFORE_SHA" "$GITHUB_SHA" | awk -F/ '$1~/packages/ && $2 && $3{ print $2 "-" $3 }' | sort -u)
+                  fi
                   echo "Packages: $PACKAGES"
-                  docker pull docker.pkg.github.com/engineer-man/piston/repo-builder:latest
+                  [ -n "$PACKAGES" ] || { echo "Nothing to build"; exit 0; }
                   docker build -t repo-builder repo
                   docker run -v "${{ github.workspace }}:/piston" repo-builder --no-server $PACKAGES
                   ls -la packages
+                  echo "built=true" >> "$GITHUB_OUTPUT"
 
             - name: Upload Packages
+              if: steps.build.outputs.built == 'true'
               uses: svenstaro/upload-release-action@v2
               with:
                   repo_token: ${{ secrets.GITHUB_TOKEN }}
@@ -49,13 +60,16 @@ jobs:
         name: Create Index
         runs-on: ubuntu-latest
         needs: build-pkg
+        if: needs.build-pkg.outputs.built == 'true'
         steps:
             - name: 'Download all release assets'
-              run: curl -s https://api.github.com/repos/engineer-man/piston/releases/latest | jq '.assets[].browser_download_url' -r | xargs -L 1 curl -sLO
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: gh release download pkgs --repo "$GITHUB_REPOSITORY" --pattern '*.pkg.tar.gz'
             - name: 'Generate index file'
               run: |
                   echo "" > index
-                  BASEURL=https://github.com/engineer-man/piston/releases/download/pkgs/
+                  BASEURL=https://github.com/$GITHUB_REPOSITORY/releases/download/pkgs/
                   for pkg in *.pkg.tar.gz
                   do
                     PKGFILE=$(basename $pkg)

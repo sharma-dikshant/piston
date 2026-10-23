@@ -20,6 +20,7 @@ cleanup(){
 
 fetch_packages(){
     local port=$((5535 + $RANDOM % 60000))
+    local api_key=$(head -c 32 /dev/urandom | od -An -tx1 | tr -d ' \n')
     mkdir build
     # Start a piston container
     docker run \
@@ -27,8 +28,9 @@ fetch_packages(){
         -v "$PWD/build":'/piston/packages' \
         -dit \
         -p $port:2000 \
+        -e PISTON_API_KEY="$api_key" \
         --name builder_piston_instance \
-        ghcr.io/engineer-man/piston
+        ghcr.io/sharma-dikshant/piston
 
     # Ensure the CLI is installed
     cd ../cli
@@ -36,7 +38,7 @@ fetch_packages(){
     cd -
 
     # Evalulate the specfile
-    ../cli/index.js -u "http://127.0.0.1:$port" ppman spec $1
+    ../cli/index.js -u "http://127.0.0.1:$port" -k "$api_key" ppman spec $1
 }
 
 build_container(){
@@ -61,4 +63,4 @@ fetch_packages $SPEC_FILE
 build_container $TAG
 
 echo "Start your custom piston container with"
-echo "$ docker run --privileged -dit -p 2000:2000 $TAG"
+echo "$ docker run --privileged -dit -p 2000:2000 -e PISTON_API_KEY=<secret> $TAG"
