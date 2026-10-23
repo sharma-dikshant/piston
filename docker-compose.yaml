@@ -1,16 +1,19 @@
-version: '3.2'
-
 services:
     api:
-        image: .
+        image: ghcr.io/sharma-dikshant/piston:latest
+        build: ./api
         container_name: piston_api
         restart: always
         privileged: true
         ports:
-            - 2000:2000
+            - ${PISTON_HOST_BIND:-127.0.0.1}:2000:2000
         volumes:
             - ./data/piston/packages:/piston/packages
-        environment:
-            - PISTON_API_KEY=${PISTON_API_KEY:?PISTON_API_KEY must be set}
         tmpfs:
             - /tmp:exec
+        environment:
+            - PISTON_API_KEY=${PISTON_API_KEY:?PISTON_API_KEY must be set}
+            - PISTON_MAX_CONCURRENT_JOBS=${PISTON_MAX_CONCURRENT_JOBS:-4}
+            - PISTON_LOG_LEVEL=${PISTON_LOG_LEVEL:-INFO}
+        mem_limit: ${PISTON_MEM_LIMIT:-3g}
+        cpus: ${PISTON_CPUS:-2}
